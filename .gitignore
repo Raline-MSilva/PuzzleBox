@@ -1,11 +1,13 @@
+!*.xcodeproj
+!*.xcworkspace
+
 # Xcode
 build/
 DerivedData/
-*.xcworkspace
 xcuserdata/
 *.xcuserstate
-*.xcodeproj/project.xcworkspace/
 *.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
 .idea/
 
 # Swift Package Manager
