@@ -59,7 +59,7 @@ extension PuzzleRegistrationViewController: PuzzleRegistrationViewDelegate {
     }
     
     func didChangeStatus(index: Int) {
-        guard let status = Puzzle.PuzzleStatus.allCases[safe: index] else { return }
+        guard let status = PuzzleStatus.allCases[safe: index] else { return }
         viewModel.updateStatus(status)
     }
     

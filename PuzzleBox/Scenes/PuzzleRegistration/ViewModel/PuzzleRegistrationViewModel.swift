@@ -11,8 +11,8 @@ protocol PuzzleRegistrationViewModelProtocol {
     var puzzle: Puzzle { get }
     func updateName(_ name: String)
     func updatePieces(_ count: Int)
-    func updateStatus(_ status: Puzzle.PuzzleStatus)
-    func updateType(_ type: Puzzle.PuzzleType)
+    func updateStatus(_ status: PuzzleStatus)
+    func updateType(_ type: PuzzleType)
     func updateStartDate(_ date: Date?)
     func updateEndDate(_ date: Date?)
     func updatePhoto(_ image: UIImage?)
@@ -37,11 +37,11 @@ final class PuzzleRegistrationViewModel: PuzzleRegistrationViewModelProtocol {
         puzzle.pieces = count
     }
 
-    public func updateStatus(_ status: Puzzle.PuzzleStatus) {
+    public func updateStatus(_ status: PuzzleStatus) {
         puzzle.status = status
     }
 
-    public func updateType(_ type: Puzzle.PuzzleType) {
+    public func updateType(_ type: PuzzleType) {
         puzzle.type = type
     }
 

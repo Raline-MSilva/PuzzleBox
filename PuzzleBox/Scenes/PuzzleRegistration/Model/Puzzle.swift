@@ -16,16 +16,15 @@ struct Puzzle {
     var startDate: Date?
     var endDate: Date?
     var photoPath: String?
+}
 
-    
-    enum PuzzleStatus: String, CaseIterable {
-        case notStarted = "Aguardando"
-        case inProgress = "Em montagem"
-        case completed = "Montado"
-    }
-    
-    enum PuzzleType: String, CaseIterable {
-        case owned = "Próprio"
-        case traveler = "Viajante"
-    }
+enum PuzzleStatus: String, CaseIterable {
+    case notStarted = "Aguardando"
+    case inProgress = "Em montagem"
+    case completed = "Montado"
+}
+
+enum PuzzleType: String, CaseIterable {
+    case owned = "Próprio"
+    case traveler = "Viajante"
 }
