@@ -40,7 +40,7 @@ final class PuzzleRegistrationView: UIView {
         return label
     }()
     
-    private let photoView = PhotoPlaceholderView()
+    public let photoView = PhotoPlaceholderView()
     private let nameField = PuzzleTextField(placeholder: "Nome")
     private let brandField = PuzzleTextField(placeholder: "Marca")
     private let piecesField = PuzzleTextField(placeholder: "Número de Peças")
@@ -99,6 +99,7 @@ final class PuzzleRegistrationView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
+        configureActions()
     }
     
     required init?(coder: NSCoder) {
@@ -143,6 +144,10 @@ final class PuzzleRegistrationView: UIView {
         spacer.translatesAutoresizingMaskIntoConstraints = false
         spacer.heightAnchor.constraint(equalToConstant: height).isActive = true
         return spacer
+    }
+    
+    func setPhotoImage(_ image: UIImage?) {
+        photoView.setImage(image)
     }
 }
 // MARK: - SetupUI

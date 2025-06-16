@@ -9,8 +9,9 @@ import UIKit
 
 final class PuzzleRegistrationViewController: UIViewController, KeyboardHandling {
     
-    private let puzzleView = PuzzleRegistrationView()
+    public let puzzleView = PuzzleRegistrationView()
     private let viewModel: PuzzleRegistrationViewModelProtocol
+    private let imagePicker = UIImagePickerController()
     var scrollViewToAdjust: UIScrollView {
             return puzzleView.scrollView
         }
@@ -45,7 +46,14 @@ extension PuzzleRegistrationViewController: PuzzleRegistrationViewDelegate {
     }
     
     func didTapPhotoButton() {
-        print("Adicionar foto")
+        presentPhotoPickerActionSheet(
+            onCameraSelected: { [weak self] in
+                self?.presentImagePicker(sourceType: .camera)
+            },
+            onGallerySelected: { [weak self] in
+                self?.presentImagePicker(sourceType: .photoLibrary)
+            }
+        )
     }
     
     func didChangeName(_ name: String) {
@@ -63,4 +71,32 @@ extension PuzzleRegistrationViewController: PuzzleRegistrationViewDelegate {
         viewModel.updateStatus(status)
     }
     
+    private func presentImagePicker(sourceType: UIImagePickerController.SourceType) {
+        imagePicker.sourceType = sourceType
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
+    }
+    
 }
+
+extension PuzzleRegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+        let selectedImage = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage
+
+        guard let image = selectedImage else {
+            picker.dismiss(animated: true)
+            return
+        }
+
+        puzzleView.setPhotoImage(image)
+
+        picker.dismiss(animated: true)
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+}
+

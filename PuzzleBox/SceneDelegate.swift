@@ -16,8 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        let viewModel = PuzzleListViewModel()
-        let controller = PuzzleListViewController(viewModel: viewModel)
+        let viewModel = PuzzleRegistrationViewModel()
+        let controller = PuzzleRegistrationViewController(viewModel: viewModel)
         
         window.rootViewController = controller
         self.window = window
