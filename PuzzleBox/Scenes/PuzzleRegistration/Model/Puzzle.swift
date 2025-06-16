@@ -22,9 +22,26 @@ enum PuzzleStatus: String, CaseIterable {
     case notStarted = "Aguardando"
     case inProgress = "Em montagem"
     case completed = "Montado"
+    
+    var displayName: String {
+        switch self {
+        case .notStarted: return "⏳ Aguardando"
+        case .inProgress: return "🧩 Montando"
+        case .completed: return "✅ Finalizado"
+        }
+    }
 }
 
 enum PuzzleType: String, CaseIterable {
     case owned = "Próprio"
     case traveler = "Viajante"
+
+    var displayName: String {
+        switch self {
+        case .owned: 
+            return "🔒 Próprios"
+        case .traveler: 
+            return "🌍 Viajantes"
+        }
+    }
 }
