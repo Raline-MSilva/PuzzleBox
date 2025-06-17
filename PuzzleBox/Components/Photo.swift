@@ -19,7 +19,7 @@ final class PhotoPlaceholderView: UIView {
         return imageView
     }()
 
-    private let imageView: UIImageView = {
+    public let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true

@@ -41,9 +41,9 @@ final class PuzzleRegistrationView: UIView {
     }()
     
     public let photoView = PhotoPlaceholderView()
-    private let nameField = PuzzleTextField(placeholder: "Nome")
-    private let brandField = PuzzleTextField(placeholder: "Marca")
-    private let piecesField = PuzzleTextField(placeholder: "Número de Peças")
+    public let nameField = PuzzleTextField(placeholder: "Nome")
+    public let brandField = PuzzleTextField(placeholder: "Marca")
+    public let piecesField = PuzzleTextField(placeholder: "Número de Peças")
     
     private let statusGroupStack: UIStackView = {
         let stack = UIStackView()
@@ -61,7 +61,7 @@ final class PuzzleRegistrationView: UIView {
         return label
     }()
     
-    private let statusControl: UISegmentedControl = {
+    public let statusControl: UISegmentedControl = {
         let control = UISegmentedControl(items: ["⏳ Aguardando", "🧩 Montando", "✅ Finalizado"])
         control.selectedSegmentIndex = 0
         control.backgroundColor = UIColor.systemGroupedBackground
@@ -234,7 +234,7 @@ final class PuzzleTextField: UITextField {
     init(placeholder: String) {
         super.init(frame: .zero)
         self.placeholder = placeholder
-        self.backgroundColor = .white
+        self.backgroundColor = .black
         self.textColor = .puzzlePrimaryText
         self.layer.cornerRadius = 8
         self.layer.borderWidth = 1

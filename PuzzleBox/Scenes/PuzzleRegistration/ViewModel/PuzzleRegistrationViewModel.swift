@@ -9,6 +9,7 @@ import UIKit
 
 protocol PuzzleRegistrationViewModelProtocol {
     var puzzle: Puzzle { get }
+    var onEvent: ((AppEvent) -> Void)? { get set }
     func updateName(_ name: String)
     func updatePieces(_ count: Int)
     func updateStatus(_ status: PuzzleStatus)
@@ -16,6 +17,7 @@ protocol PuzzleRegistrationViewModelProtocol {
     func updateStartDate(_ date: Date?)
     func updateEndDate(_ date: Date?)
     func updatePhoto(_ image: UIImage?)
+    func saveTapped()
 }
 
 final class PuzzleRegistrationViewModel: PuzzleRegistrationViewModelProtocol {
@@ -28,6 +30,7 @@ final class PuzzleRegistrationViewModel: PuzzleRegistrationViewModelProtocol {
         endDate: nil,
         photoPath: ""
     )
+    public var onEvent: ((AppEvent) -> Void)?
     
     public func updateName(_ name: String) {
         puzzle.name = name
@@ -51,6 +54,9 @@ final class PuzzleRegistrationViewModel: PuzzleRegistrationViewModelProtocol {
 
     public func updateEndDate(_ date: Date?) {
         puzzle.endDate = date
+    }
+    public func saveTapped() {
+        onEvent?(.list(puzzle))
     }
 
     public func updatePhoto(_ image: UIImage?) {

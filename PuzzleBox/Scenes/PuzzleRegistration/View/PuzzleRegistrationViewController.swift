@@ -27,11 +27,12 @@ final class PuzzleRegistrationViewController: UIViewController, KeyboardHandling
     
     override func loadView() {
         self.view = puzzleView
-        puzzleView.delegate = self
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        puzzleView.delegate = self
+
         registerForKeyboardNotifications()
     }
     
@@ -42,7 +43,17 @@ final class PuzzleRegistrationViewController: UIViewController, KeyboardHandling
 }
 extension PuzzleRegistrationViewController: PuzzleRegistrationViewDelegate {
     func didTapSaveButton() {
-        print("Salvar quebra-cabeça")
+        viewModel.updateName(puzzleView.nameField.text ?? "")
+        viewModel.updatePieces(Int(puzzleView.piecesField.text ?? "") ?? 0)
+        viewModel.updateStatus(PuzzleStatus.allCases[puzzleView.statusControl.selectedSegmentIndex])
+        viewModel.updateType(.owned)
+        viewModel.updatePhoto(puzzleView.photoView.imageView.image)
+
+        let newPuzzle = viewModel.puzzle
+        
+        // Salva no repositório
+        PuzzleRepository.shared.save(newPuzzle)
+        viewModel.saveTapped()
     }
     
     func didTapPhotoButton() {

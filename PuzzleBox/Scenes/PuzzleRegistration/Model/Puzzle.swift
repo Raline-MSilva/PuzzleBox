@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct Puzzle {
+struct Puzzle: Codable {
     var id: UUID = UUID()
     var name: String
     var pieces: Int
@@ -18,7 +18,7 @@ struct Puzzle {
     var photoPath: String?
 }
 
-enum PuzzleStatus: String, CaseIterable {
+enum PuzzleStatus: String, CaseIterable, Codable {
     case notStarted = "Aguardando"
     case inProgress = "Em montagem"
     case completed = "Montado"
@@ -32,7 +32,7 @@ enum PuzzleStatus: String, CaseIterable {
     }
 }
 
-enum PuzzleType: String, CaseIterable {
+enum PuzzleType: String, CaseIterable, Codable {
     case owned = "Próprio"
     case traveler = "Viajante"
 
