@@ -45,7 +45,6 @@ final class PuzzleListViewModel: PuzzleListViewModelProtocol {
     // MARK: - Init
     
     init() {
-        puzzles = PuzzleRepository.shared.fetchAll()
         filterPuzzles(status: .completed, type: .owned)
         didUpdate?()
     }

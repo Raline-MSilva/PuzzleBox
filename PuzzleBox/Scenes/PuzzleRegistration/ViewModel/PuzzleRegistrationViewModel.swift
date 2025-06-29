@@ -8,7 +8,7 @@
 import UIKit
 
 protocol PuzzleRegistrationViewModelProtocol {
-    var puzzle: Puzzle { get }
+    var puzzle: Puzzle? { get }
     var onEvent: ((AppEvent) -> Void)? { get set }
     func updateName(_ name: String)
     func updatePieces(_ count: Int)
@@ -21,42 +21,55 @@ protocol PuzzleRegistrationViewModelProtocol {
 }
 
 final class PuzzleRegistrationViewModel: PuzzleRegistrationViewModelProtocol {
-    public var puzzle = Puzzle(
-        name: "",
-        pieces: 0,
-        status: .notStarted,
-        type: .owned,
-        startDate: nil,
-        endDate: nil,
-        photoPath: ""
-    )
+    public var puzzle: Puzzle?
     public var onEvent: ((AppEvent) -> Void)?
+    let repository = CoreDataPuzzleRepository.shared
+    
+    init(puzzle: Puzzle? = nil) {
+        if let puzzle {
+            self.puzzle = puzzle
+        } else {
+            self.puzzle = Puzzle(
+                name: "",
+                brand: "",
+                pieceCount: 0,
+                status: .notStarted,
+                type: .owned,
+                startDate: nil,
+                endDate: nil,
+                photoPath: ""
+            )
+        }
+    }
+    
     
     public func updateName(_ name: String) {
-        puzzle.name = name
+        puzzle?.name = name
     }
 
     public func updatePieces(_ count: Int) {
-        puzzle.pieces = count
+        puzzle?.pieceCount = count
     }
 
     public func updateStatus(_ status: PuzzleStatus) {
-        puzzle.status = status
+        puzzle?.status = status
     }
 
     public func updateType(_ type: PuzzleType) {
-        puzzle.type = type
+        puzzle?.type = type
     }
 
     public func updateStartDate(_ date: Date?) {
-        puzzle.startDate = date
+        puzzle?.startDate = date
     }
 
     public func updateEndDate(_ date: Date?) {
-        puzzle.endDate = date
+        puzzle?.endDate = date
     }
-    public func saveTapped() {
-        onEvent?(.list(puzzle))
+    func saveTapped() {
+        guard let puzzle else { return }
+        repository.saveContext()
+        onEvent?(AppEvent.list(puzzle))
     }
 
     public func updatePhoto(_ image: UIImage?) {
@@ -64,7 +77,7 @@ final class PuzzleRegistrationViewModel: PuzzleRegistrationViewModelProtocol {
         let fileName = "\(UUID().uuidString).jpg"
         
         if let filePath = saveImageToDocuments(image, named: fileName) {
-            puzzle.photoPath = filePath
+            puzzle?.photoPath = filePath
         }
     }
 

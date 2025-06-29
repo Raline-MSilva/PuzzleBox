@@ -31,15 +31,22 @@ final class PuzzleRegistrationViewController: UIViewController, KeyboardHandling
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Novo Quebra-Cabeça"
         puzzleView.delegate = self
-
+        registerPuzzle()
         registerForKeyboardNotifications()
+
     }
     
     deinit {
         unregisterForKeyboardNotifications()
-       }
-
+    }
+    
+    func registerPuzzle() {
+        if let puzzleToEdit = viewModel.puzzle {
+            puzzleView.fillForm(with: puzzleToEdit)
+        }
+    }
 }
 extension PuzzleRegistrationViewController: PuzzleRegistrationViewDelegate {
     func didTapSaveButton() {
@@ -49,10 +56,6 @@ extension PuzzleRegistrationViewController: PuzzleRegistrationViewDelegate {
         viewModel.updateType(.owned)
         viewModel.updatePhoto(puzzleView.photoView.imageView.image)
 
-        let newPuzzle = viewModel.puzzle
-        
-        // Salva no repositório
-        PuzzleRepository.shared.save(newPuzzle)
         viewModel.saveTapped()
     }
     
@@ -80,6 +83,11 @@ extension PuzzleRegistrationViewController: PuzzleRegistrationViewDelegate {
     func didChangeStatus(index: Int) {
         guard let status = PuzzleStatus.allCases[safe: index] else { return }
         viewModel.updateStatus(status)
+    }
+    
+    func didChangeType(index: Int) {
+        let type: PuzzleType = index == 0 ? .owned : .traveler
+        viewModel.updateType(type)
     }
     
     private func presentImagePicker(sourceType: UIImagePickerController.SourceType) {

@@ -13,6 +13,7 @@ protocol PuzzleRegistrationViewDelegate: AnyObject {
     func didChangeName(_ name: String)
     func didChangePieces(_ pieces: String)
     func didChangeStatus(index: Int)
+    func didChangeType(index: Int)
 }
 
 final class PuzzleRegistrationView: UIView {
@@ -51,6 +52,30 @@ final class PuzzleRegistrationView: UIView {
         stack.spacing = 8
         stack.distribution = .fillProportionally
         return stack
+    }()
+    
+    private let typeGroupStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 8
+        return stack
+    }()
+
+    private let typeLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Tipo"
+        label.font = UIFont.preferredFont(forTextStyle: .headline)
+        label.adjustsFontForContentSizeCategory = true
+        return label
+    }()
+
+    public let typeControl: UISegmentedControl = {
+        let control = UISegmentedControl(items: ["📦 Próprio", "🚚 Viajante"])
+        control.selectedSegmentIndex = 0
+        control.backgroundColor = UIColor.systemGroupedBackground
+        control.selectedSegmentTintColor = UIColor.systemOrange
+        control.accessibilityLabel = "Tipo do Quebra-Cabeça"
+        return control
     }()
 
     private let statusLabel: UILabel = {
@@ -131,12 +156,18 @@ final class PuzzleRegistrationView: UIView {
         delegate?.didChangeStatus(index: sender.selectedSegmentIndex)
     }
     
+    @objc
+    private func typeChanged(_ sender: UISegmentedControl) {
+        delegate?.didChangeType(index: sender.selectedSegmentIndex)
+    }
+    
     private func configureActions() {
         saveButton.addTarget(self, action: #selector(handleSaveButton), for: .touchUpInside)
         photoView.actionButton.addTarget(self, action: #selector(handlePhotoButton), for: .touchUpInside)
         nameField.addTarget(self, action: #selector(nameFieldChanged), for: .editingChanged)
         piecesField.addTarget(self, action: #selector(piecesFieldChanged), for: .editingChanged)
         statusControl.addTarget(self, action: #selector(statusChanged), for: .valueChanged)
+        typeControl.addTarget(self, action: #selector(typeChanged), for: .valueChanged)
     }
     
     private func makeSpacer(height: CGFloat = 12) -> UIView {
@@ -148,6 +179,39 @@ final class PuzzleRegistrationView: UIView {
     
     func setPhotoImage(_ image: UIImage?) {
         photoView.setImage(image)
+    }
+    
+    func fillForm(with model: Puzzle) {
+        nameField.text = model.name
+        brandField.text = model.brand
+        piecesField.text = "\(model.pieceCount)"
+        
+        // Corrigindo enums -> índice do segmented control
+        if let statusIndex = PuzzleStatus.allCases.firstIndex(of: model.status) {
+            statusControl.selectedSegmentIndex = statusIndex
+        }
+
+        if let typeIndex = PuzzleType.allCases.firstIndex(of: model.type) {
+            typeControl.selectedSegmentIndex = typeIndex
+        }
+        
+        // Convertendo imageData -> UIImage
+        let image = model.imageData.flatMap { UIImage(data: $0) }
+        setPhotoImage(image)
+
+        // Converter datas para string
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "pt_BR")
+
+        if let start = model.startDate {
+            startDateField.text = formatter.string(from: start)
+        }
+
+        if let end = model.endDate {
+            endDateField.text = formatter.string(from: end)
+        }
     }
 }
 // MARK: - SetupUI
@@ -161,6 +225,9 @@ extension PuzzleRegistrationView: SetupUI {
 
         headerStack.addArrangedSubview(photoView)
 
+        typeGroupStack.addArrangedSubview(typeLabel)
+        typeGroupStack.addArrangedSubview(typeControl)
+
         statusGroupStack.addArrangedSubview(statusLabel)
         statusGroupStack.addArrangedSubview(statusControl)
 
@@ -170,6 +237,7 @@ extension PuzzleRegistrationView: SetupUI {
         contentStack.addArrangedSubview(nameField)
         contentStack.addArrangedSubview(brandField)
         contentStack.addArrangedSubview(piecesField)
+        contentStack.addArrangedSubview(typeGroupStack)
         contentStack.addArrangedSubview(statusGroupStack)
         contentStack.addArrangedSubview(dateStack)
         contentStack.addArrangedSubview(saveButton)

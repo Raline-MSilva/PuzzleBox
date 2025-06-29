@@ -7,44 +7,55 @@
 
 import UIKit
 
-final class AppCoordinator {
-    let navigationController: UINavigationController
+protocol AppCoordinatorProtocol {
+    func start()
+    func route(to event: AppEvent)
+}
+
+final class AppCoordinator: AppCoordinatorProtocol {
+    private let navigationController: UINavigationController
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
-
+    
     func start() {
-        route(to: .registration)
+        showSearch()
     }
-
-    private func showPuzzleRegistration() {
-        let registrationViewModel = PuzzleRegistrationViewModel()
-        registrationViewModel.onEvent = { [weak self] event in
+    
+    private func showSearch() {
+        let viewModel = PuzzleSearchViewModel()
+        viewModel.onEvent = { [weak self] event in
             self?.route(to: event)
         }
-        let registrationVC = PuzzleRegistrationViewController(viewModel: registrationViewModel)
-
-        navigationController.pushViewController(registrationVC, animated: false)
+        
+        let viewController = PuzzleSearchViewController(viewModel: viewModel)
+        viewController.coordinator = self
+        navigationController.pushViewController(viewController, animated: true)
     }
-
-    private func showPuzzleList(with puzzle: Puzzle? = nil) {
-        let listViewModel = PuzzleListViewModel()
-        if let puzzle = puzzle {
-            PuzzleRepository.shared.save(puzzle)
-            listViewModel.currentType = puzzle.type
-            listViewModel.filterPuzzles(status: puzzle.status, type: puzzle.type)
+    
+    private func showPuzzleRegistration(with puzzle: Puzzle? = nil) {
+        let viewModel = PuzzleRegistrationViewModel(puzzle: puzzle)
+        viewModel.onEvent = { [weak self] event in
+            self?.route(to: event)
         }
 
-        let listVC = PuzzleListViewController(viewModel: listViewModel)
-        navigationController.pushViewController(listVC, animated: true)
+        let viewController = PuzzleRegistrationViewController(viewModel: viewModel)
+        navigationController.pushViewController(viewController, animated: true)
+    }
+    
+    private func showPuzzleList(with puzzle: Puzzle? = nil) {
+        let viewModel = PuzzleListViewModel()
+        let viewController = PuzzleListViewController(viewModel: viewModel)
+        navigationController.pushViewController(viewController, animated: true)
     }
     
     func route(to event: AppEvent) {
         switch event {
-        case .registration:
-            showPuzzleRegistration()
-            
+        case .search:
+            showSearch()
+        case .registration(let puzzle):
+            showPuzzleRegistration(with: puzzle)
         case .list(let puzzle):
             showPuzzleList(with: puzzle)
         }
@@ -52,6 +63,7 @@ final class AppCoordinator {
 }
 
 enum AppEvent {
-    case registration
+    case search
+    case registration(Puzzle)
     case list(Puzzle)
 }
